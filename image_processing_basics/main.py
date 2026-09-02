@@ -1,36 +1,28 @@
 import cv2
 import matplotlib.pyplot as plt
 
-def load_image(image_path):
+def read_image(image_path):
     image = cv2.imread(image_path)
+
     if image is None:
         raise FileNotFoundError(f"Could not load image: {image_path}")
-    else:
-        return image
 
-image = load_image("images/input.jpg")
-
-def read_image(image_path):
-    image = load_image("images/input.jpg")
-    if image is None:
-        raise FileNotFoundError(f"Could not load image")
-    
+    print("Image loaded successfully")
     return image
 
+image = read_image("images/input.jpg")
+
 def resize_image(image_path):
-    image = load_image("images/input.jpg")
     resized_image = cv2.resize(image, (225, 225))
 
     return resized_image
 
 def convert_to_grayscale(image_path):
-    image = load_image("images/input.jpg")
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     return grayscale_image
 
 def detect_edges(image_path, lower_threshold, upper_threshold):
-    image = load_image("images/input.jpg")
     edge_detected_image = cv2.Canny(image, lower_threshold, upper_threshold)
 
     return edge_detected_image
@@ -39,8 +31,8 @@ def detect_edges(image_path, lower_threshold, upper_threshold):
 
 
 # print its width, height and number of channels
-print(f"Width: {image.shape[0]}") # width
-print(f"Height: {image.shape[1]}") # height
+print(f"Height: {image.shape[0]}") # height
+print(f"Width: {image.shape[1]}") # width
 print(f"No of channels: {image.shape[2]}") # channels
 
 # print its datatype
@@ -90,4 +82,4 @@ def display_results():
 
     plt.show()
 
-print(display_results())
+display_results()

@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 def read_image(image_path):
     image = cv2.imread(image_path)
-
     if image is None:
         raise FileNotFoundError(f"Could not load image: {image_path}")
 
@@ -14,21 +13,15 @@ image = read_image("images/input.jpg")
 
 def resize_image(image_path):
     resized_image = cv2.resize(image, (225, 225))
-
     return resized_image
 
 def convert_to_grayscale(image_path):
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
     return grayscale_image
 
 def detect_edges(image_path, lower_threshold, upper_threshold):
     edge_detected_image = cv2.Canny(image, lower_threshold, upper_threshold)
-
     return edge_detected_image
-
-
-
 
 # print its width, height and number of channels
 print(f"Height: {image.shape[0]}") # height

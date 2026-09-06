@@ -42,6 +42,38 @@ The processed images represents the follwing:
 
 6. **What information is lost when converting an image to grayscale?**  
    Color information is lost, while intensity information is retained.
+   
+
+## DAY 03
+1. **Difference between classification and detection**
+   Classification identifies what an object is, while detection identifies what objects are present and their individual locations
+
+2. **What does bounding box represent?**
+   Bounding box represents location and boundaries of an object
+
+3. **Confidence score**
+   Confidence score tells how sure YOLO is that the object belongs to the predicted class
+
+4. **Confidence threshold is increased**
+   If confidence threshold is increased, the objects with lower confidence levels are not detected
+
+5. **Inference**
+   Inference is the process of using a trained YOLO model to analyze new images or videos and make predictions about the objects present
+
+6. **Pre-trained model**
+   A model that has been already trained with a large dataset and can be used to classify objects without training
+
+7. **Difference between YOLO and contour detection**
+   YOLO detects objects using a trained model, while contour detection finds object boundaries 
+
+8. **Why might YOLO miss an object**
+   If confidence score is too low or if the object is too small, hidden or blurry
+
+9. **Why can YOLO produce an incorrect detection**
+   YOLO can produce an incorrect detection if objects are unclear, partially hidden or the model is not confident enough
+
+10. **Why is a smaller model useful for local testing?**
+   A smaller model is useful for local testing because it runs faster and requires less memory and computing power
 
 ## Installation
 

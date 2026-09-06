@@ -1,23 +1,23 @@
 ## DAY 01
-### 1. OpenCV
+1. **OpenCV**
 OpenCV is a python library used to process, analyze and images and videos
 
-### 2. Width, Height and Channels
+2. **Width, Height and Channels**
 - Width is no of pixels from left to right
 - Height is no of pixels from top to bottom
 - Channels represents the no of stored values for each pixel
 
-### 3. Grayscale
+3. **Grayscale**
 - Converting a colored image into shades of gray
 - 0 to 255
 
-### 4. Edge detection
+4. **Edge detection**
 Edge detection finds the boundaries/ edges of object in an image
 
-### 5. BGR vs RGB
+5. **BGR vs RGB**
 OpenCV uses BGR to read image while matplotlib uses RGB to display image
 
-### 6. Processed Images
+6. **Processed Images**
 The processed images represents the follwing:
 - Resized: same as original but with different dimensions
 - Edge: Boundaries and outlines
@@ -42,7 +42,7 @@ The processed images represents the follwing:
 
 6. **What information is lost when converting an image to grayscale?**  
    Color information is lost, while intensity information is retained.
-   
+
 
 ## DAY 03
 1. **Difference between classification and detection**

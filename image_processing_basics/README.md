@@ -1,6 +1,6 @@
 ## DAY 01
 1. **OpenCV**
-OpenCV is a python library used to process, analyze and images and videos
+OpenCV is a python library used to process and analyze images and videos
 
 2. **Width, Height and Channels**
 - Width is no of pixels from left to right

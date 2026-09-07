@@ -14,6 +14,7 @@ def detect_objects(model):
         conf = 0.25,
         save = True,
         project = "output",
+        name = "input_yolo",
         verbose = False
     )
     return results
@@ -102,41 +103,50 @@ def detect_selected_class(results, selected_class):
 
     return results_selected_class
 
-def process_video(model):
-    results_video = model.predict(
-        source = "videos/input.mp4",
-        conf = 0.40,
-        stream = True,
-        save = True,
-        verbose = False
-    )
+# def process_video(model):
+    # results_video = model.predict(
+    #     source = "videos/input.mp4",
+    #     conf = 0.40,
+    #     stream = True,
+    #     save = True,
+    #     verbose = False,
+    #     project = "output",
+    #     name = "input_video"
+    # )
     
-    for result in results_video:
-        pass
+    # for result in results_video:
+    #     pass
 
-    return results_video
+    # return results_video
 
-
+# loading model
 model = load_model()
 
+# saving results --> image with objects detected
 results = detect_objects(model)
 
+# printing detections
 print_detections(results, model)
 
+# printing no of objects
 print(count_objects(results, model, {}))
 
+# confidence thresholds
 compare_confidence_levels(model)
 
+# detect selected object
 detect_selected_class(results, 7)
 
-process_video(model)
+# video
+# process_video(model)
 
-video = VideoFileClip("runs/detect/predict/input.avi")
+# saving video as .mp4 file
+video = VideoFileClip("runs/detect/output/input_video/input.avi")
 video.write_videofile("output/day_03/yolo_result.mp4")
 video.close()
 
 # for conf = 0.25
-shutil.copy("runs/detect/output/predict/input_yolo.jpg", "output/day_03/yolo_result.jpg")
+shutil.copy("runs/detect/output/input_yolo/input_yolo.jpg", "output/day_03/yolo_result.jpg")
 
 # for conf = 0.20
 shutil.copy("runs/detect/output/conf_20/input_yolo.jpg", "output/day_03/conf_20.jpg")

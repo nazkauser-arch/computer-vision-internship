@@ -1,7 +1,5 @@
 from ultralytics import YOLO
 import shutil
-
-from ultralytics import YOLO
 from moviepy import VideoFileClip
 
 def load_model():

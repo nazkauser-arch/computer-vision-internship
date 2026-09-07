@@ -1,11 +1,16 @@
 import cv2
 
-def convert_to_grayscale(image_path):
+def read_image(image_path):
     image = cv2.imread(image_path)
     if image is None:
         raise FileNotFoundError(f"Couldn't load image")
 
+    return image
+
+def convert_to_grayscale(image_path):
+    image = cv2.imread(image_path)
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
     return grayscale_image
 
 # thresholding without blur
@@ -72,8 +77,8 @@ def find_contours(thresholded_image):
     )
     return contours
 
-def draw_all_contours(best_threshold, contours):
-    result = best_threshold.copy()
+def draw_all_contours(image, contours):
+    result = image.copy()
 
     cv2.drawContours(
         result,
@@ -90,8 +95,8 @@ def find_smallest_contour(contours, min_area):
         if cv2.contourArea(contour) > min_area
     ]
 
-def draw_filtered_contour(best_threshold, filetered_contours):
-    filtered_image = best_threshold.copy()
+def draw_filtered_contour(image, filetered_contours):
+    filtered_image = image.copy()
 
     cv2.drawContours(
         filtered_image,
@@ -102,7 +107,43 @@ def draw_filtered_contour(best_threshold, filetered_contours):
     )
     return filtered_image
 
+def draw_bounding_boxes(image, filtered_contours):
+    result = image.copy()
 
+    for contour in filtered_contours:
+        cv2.drawContours(
+            result,
+            [contour],
+            -1,
+            (0, 255, 0),
+            2
+        )
+
+        x, y, w, h = cv2.boundingRect(contour)
+
+        cv2.rectangle(
+            result,
+            (x, y),
+            (x + w, y + h),
+            (0, 0, 255),
+            2
+        )
+
+        area = cv2.contourArea(contour)
+
+        cv2.putText(
+            result,
+            f"Area: {area:.0f}",
+            (x, y - 10),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (255, 0, 0),
+            1
+        )
+
+    return result
+
+image = cv2.imread("images/input.jpg")
 grayscale_image = convert_to_grayscale("images/input.jpg")
 binary, inverse, adaptive_binary, adaptive_inverse = apply_threshold(grayscale_image)
 gaussian_blur, median_blur = apply_blur(grayscale_image)
@@ -140,3 +181,7 @@ print("Filtered contours: ", len(filtered_contours))
 # saving filtered contours
 filtered_image = draw_filtered_contour(best_threshold, filtered_contours)
 cv2.imwrite("output/day_02/filtered_contours.jpg", filtered_image)
+
+# saving image with bounding boxes
+bounding_boxes = draw_bounding_boxes(image, filtered_contours)
+cv2.imwrite("output/day_02/bounding_boxes.jpg", bounding_boxes)

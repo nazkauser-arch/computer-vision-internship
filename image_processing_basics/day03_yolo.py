@@ -103,21 +103,21 @@ def detect_selected_class(results, selected_class):
 
     return results_selected_class
 
-# def process_video(model):
-    # results_video = model.predict(
-    #     source = "videos/input.mp4",
-    #     conf = 0.40,
-    #     stream = True,
-    #     save = True,
-    #     verbose = False,
-    #     project = "output",
-    #     name = "input_video"
-    # )
+def process_video(model):
+    results_video = model.predict(
+        source = "videos/input.mp4",
+        conf = 0.40,
+        stream = True,
+        save = True,
+        verbose = False,
+        project = "output",
+        name = "input_video"
+    )
     
-    # for result in results_video:
-    #     pass
+    for result in results_video:
+        pass
 
-    # return results_video
+    return results_video
 
 # loading model
 model = load_model()
@@ -138,7 +138,7 @@ compare_confidence_levels(model)
 detect_selected_class(results, 7)
 
 # video
-# process_video(model)
+process_video(model)
 
 # saving video as .mp4 file
 video = VideoFileClip("runs/detect/output/input_video/input.avi")

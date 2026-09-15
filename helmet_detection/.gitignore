@@ -1,0 +1,4 @@
+runs/
+helmet-dataset/train/
+helmet-dataset/test/
+helmet-dataset/valid/

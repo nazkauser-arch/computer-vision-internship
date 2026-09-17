@@ -24,7 +24,7 @@ yes no helmet is comparatively weaker
 ### Model Error Analysis
 
 | Error Type | Count Found |
-|---|---:|---|
+|---|---:|
 | False positive | 0 |
 | False negative | 33 |
 | Wrong class | 1 |

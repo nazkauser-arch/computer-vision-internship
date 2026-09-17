@@ -29,4 +29,3 @@ yes no helmet is comparatively weaker
 | False negative | 33 |
 | Wrong class | 1 |
 | Poor bounding box | 0 |
-

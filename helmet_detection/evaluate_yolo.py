@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 
-model = YOLO("runs/detect/helmet_detector/weights/best.pt")
+model = YOLO("runs/detect/helmet_detector_v2/weights/best.pt")
 
 metrics = model.val(
     data="helmet-dataset/data.yaml",

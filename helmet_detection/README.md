@@ -24,8 +24,17 @@ yes no helmet is comparatively weaker
 ### Model Error Analysis
 
 | Error Type | Count Found |
-|---|---:|
+|---|---:|                                          
 | False positive | 0 |
 | False negative | 33 |
 | Wrong class | 1 |
 | Poor bounding box | 0 |
+
+### Comparing both models
+
+| Metric | Version 1 | Version 2 |
+|---|---:|---|
+| Precision | 0.737 | 0.47 |
+| Recall | 0.49 | 0.51 |
+| mAP50 | 0.61 | 0.52 |
+| mAP50-95 | 0.38 | 0.34 |

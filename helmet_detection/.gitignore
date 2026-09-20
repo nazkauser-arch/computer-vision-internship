@@ -2,4 +2,4 @@ runs/
 helmet-dataset/train/
 helmet-dataset/test/
 helmet-dataset/valid/
-helmet-dataset/raw_images
+helmet-dataset/raw_images/

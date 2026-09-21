@@ -2,6 +2,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 import numpy as np
 import cv2
 from ultralytics import YOLO
+import time
 
 app = FastAPI(title="Helmet Detection API")
 model = YOLO("model/best.pt")
@@ -13,7 +14,6 @@ def health():
         "model" : "helmet-detector" 
     }
 
-
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     allowed_extensions = [".jpg", ".jpeg", ".png"]
@@ -24,7 +24,23 @@ async def predict(file: UploadFile = File(...)):
             detail="Unsupported file type. Only JPG, JPEG, and PNG are allowed."
         )
 
-    contents = await file.read()
+    MAX_FILE_SIZE = 5 * 1024 * 1024
+    contents = bytearray()
+
+    while chunk := await file.read(1024 * 1024):
+        contents.extend(chunk)
+
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail="File is too large. Maximum size is 5 MB."
+        )
+
+    if not contents:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid image"
+        )
 
     image_array = np.frombuffer(contents, np.uint8)
 
@@ -36,11 +52,21 @@ async def predict(file: UploadFile = File(...)):
             detail="Could not decode the uploaded image."
         )
 
-    results = model.predict(
-        source=image,
-        conf=0.50,
-        verbose=False
-    )
+    start_time = time.perf_counter()
+
+    try:
+        results = model.predict(
+            source=image,
+            conf=0.50,
+            verbose=False
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail="Prediction failed"
+        )
+
+    processing_time_ms = (time.perf_counter() - start_time) * 1000
 
     result = results[0]
 
@@ -81,5 +107,6 @@ async def predict(file: UploadFile = File(...)):
         "width": image.shape[1],
         "height": image.shape[0],
         "detections": detections,
-        "counts": counts
+        "counts": counts,
+        "processing_time_ms": round(processing_time_ms, 2)
     }

@@ -14,27 +14,27 @@ def health():
         "model" : "helmet-detector" 
     }
 
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+
+async def validate_upload(file: UploadFile):
     allowed_extensions = [".jpg", ".jpeg", ".png"]
 
     if not file.filename.lower().endswith(tuple(allowed_extensions)):
         raise HTTPException(
             status_code=400,
-            detail="Unsupported file type. Only JPG, JPEG, and PNG are allowed."
+            detail="Unsupported file type. Only JPG, JPEG and PNG are allowed."
         )
 
-    MAX_FILE_SIZE = 5 * 1024 * 1024
+    max_file_size = 5 * 1024 * 1024
     contents = bytearray()
 
     while chunk := await file.read(1024 * 1024):
         contents.extend(chunk)
 
-    if len(contents) > MAX_FILE_SIZE:
-        raise HTTPException(
-            status_code=413,
-            detail="File is too large. Maximum size is 5 MB."
-        )
+        if len(contents) > max_file_size:
+            raise HTTPException(
+                status_code=413,
+                detail="File is too large. Maximum size is 5 MB."
+            )
 
     if not contents:
         raise HTTPException(
@@ -42,40 +42,43 @@ async def predict(file: UploadFile = File(...)):
             detail="Invalid image"
         )
 
-    image_array = np.frombuffer(contents, np.uint8)
+    return contents
 
+def decode_image(contents):
+    image_array = np.frombuffer(contents, np.uint8)
     image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
     if image is None:
         raise HTTPException(
             status_code=400,
-            detail="Could not decode the uploaded image."
+            detail="Invalid image"
         )
 
-    start_time = time.perf_counter()
+    return image
 
+def run_prediction(image):
     try:
+        start_time = time.perf_counter()
+
         results = model.predict(
             source=image,
             conf=0.50,
             verbose=False
         )
+
+        processing_time_ms = (time.perf_counter() - start_time) * 1000
+
+        return results, processing_time_ms
+
     except Exception:
         raise HTTPException(
             status_code=500,
             detail="Prediction failed"
         )
 
-    processing_time_ms = (time.perf_counter() - start_time) * 1000
-
+def format_detections(results):
     result = results[0]
-
     detections = []
-
-    counts = {
-        "helmet": 0,
-        "no_helmet": 0
-    }
 
     for box in result.boxes:
         class_id = int(box.cls[0])
@@ -97,8 +100,28 @@ async def predict(file: UploadFile = File(...)):
         }
 
         detections.append(detection)
+
+    return detections
+
+def count_classes(detections):
+    counts = {
+        "helmet": 0,
+        "no_helmet": 0
+    }
+
+    for detection in detections:
+        class_name = detection["class"]
         counts[class_name] += 1
 
+    return counts
+
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    contents = await validate_upload(file)
+    image = decode_image(contents)
+    results, processing_time_ms = run_prediction(image)
+    detections = format_detections(results)
+    counts = count_classes(detections)
 
     return {
         "message": "Image uploaded and decoded successfully",

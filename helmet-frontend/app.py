@@ -1,5 +1,5 @@
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageDraw
 import os
 from dotenv import load_dotenv
 import requests
@@ -11,6 +11,7 @@ PREDICT_URL = f"{API_URL}/predict"
 st.set_page_config(page_title="Helmet Detection App")
 
 st.title("Helmet Detection App")
+
 st.write("Upload an image to detect whether people are wearing helmets.")
 
 uploaded_file = st.file_uploader(
@@ -58,42 +59,124 @@ if uploaded_file is not None:
                 )
 
             if response.status_code == 200:
-                st.success("Image sent successfully to the API.")
+
+                result = response.json()
+
+                detections = result["detections"]
+                counts = result["counts"]
+                processing_time = result["processing_time_ms"]
+
+                result_image = image.copy()
+                draw = ImageDraw.Draw(result_image)
+
+                for detection in detections:
+
+                    class_name = detection["class"]
+                    confidence_value = detection["confidence"]
+                    box = detection["box"]
+
+                    x1 = box["x1"]
+                    y1 = box["y1"]
+                    x2 = box["x2"]
+                    y2 = box["y2"]
+
+                    if class_name == "helmet":
+                        draw.rectangle(
+                            [x1, y1, x2, y2],
+                            outline="green",
+                            width=3
+                        )
+
+                        draw.text(
+                            (x1, y1),
+                            f"{class_name} {confidence_value:.2f}",
+                            fill="green"
+                        )
+                    elif class_name == "no_helmet":
+                        draw.rectangle(
+                            [x1, y1, x2, y2],
+                            outline="red",
+                            width=3
+                        )
+
+                        draw.text(
+                            (x1, y1),
+                            f"{class_name} {confidence_value:.2f}",
+                            fill="red"
+                        )
+
+                st.subheader("Detection Result")
+                st.image(result_image)
+
+                st.subheader("Detection Counts")
+
+                st.write(f"Helmet: {counts['helmet']}")
+                st.write(f"No Helmet: {counts['no_helmet']}")
+                st.write(f"Processing Time: {processing_time:.2f} ms")
+
+                st.subheader("Detection Details")
+
+                if detections:
+                    table_data = []
+
+                    for i, detection in enumerate(detections, start=1):
+
+                        table_data.append({
+                            "Detection": i,
+                            "Class": detection["class"],
+                            "Confidence": round(
+                                detection["confidence"], 2
+                                )
+                            })
+
+                    st.table(table_data)
+
+                else:
+                    st.write("No detections found.")
 
             elif response.status_code == 400:
+
                 detail = response.json().get(
                     "detail",
                     "Invalid request."
                 )
+
                 st.error(f"Error 400: {detail}")
 
             elif response.status_code == 413:
+
                 detail = response.json().get(
                     "detail",
                     "File is too large. Maximum size is 5 MB."
                 )
+
                 st.error(f"Error 413: {detail}")
 
             else:
+
                 detail = response.json().get(
                     "detail",
                     "Prediction failed."
                 )
+
                 st.error(
                     f"Error {response.status_code}: {detail}"
                 )
 
         except requests.exceptions.ConnectionError:
+
             st.error(
                 "API is not available. Please make sure the FastAPI server is running."
             )
 
         except requests.exceptions.Timeout:
+
             st.error(
                 "Request timed out. The API took too long to respond."
             )
 
         except requests.exceptions.RequestException:
+
             st.error(
                 "Unable to connect to the prediction API."
             )

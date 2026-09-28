@@ -137,6 +137,6 @@ During this internship at **Devsinc**, I have worked with:
 
 ## Author
 
-**Kauser N.**
+**Kauser Naz**
 
 Computer Vision Intern at **Devsinc**

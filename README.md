@@ -2,7 +2,7 @@
 
 This repository contains the projects, experiments, and implementations completed during my **Computer Vision Internship at Devsinc**.
 
-The internship focuses on **computer vision, object detection, model evaluation, API development, frontend integration, Dockerization, and real-time object tracking**.
+The internship focuses on **computer vision, object detection, model evaluation, API development, frontend integration, Dockerization and real-time object tracking**.
 
 ## Projects
 

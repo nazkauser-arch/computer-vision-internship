@@ -41,7 +41,7 @@ try:
             frame,
             persist=True,
             tracker="custom_bytetrack.yaml",
-            conf=0.25,
+            conf=0.50,
             imgsz = 640,
             verbose=False
         )

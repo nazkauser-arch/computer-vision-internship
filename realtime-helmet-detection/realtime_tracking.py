@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import time
+from event_logger import log_event
 
 model = YOLO("model/best.pt")
 
@@ -40,7 +41,8 @@ try:
             frame,
             persist=True,
             tracker="custom_bytetrack.yaml",
-            conf=0.75,
+            conf=0.25,
+            imgsz = 640,
             verbose=False
         )
 
@@ -87,6 +89,7 @@ try:
                             print(
                                 f"CONFIRMED NO-HELMET EVENT: ID {tracking_id}"
                             )
+                            log_event(tracking_id, "no_helmet", confidence)
 
                 elif class_name == "helmet":
                     no_helmet_counts[tracking_id] = 0
@@ -202,6 +205,8 @@ try:
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
+    print(f"Total confirmed no helmet events: {len(confirmed_events)}")
+
 finally:
     end_time = time.time()
     processing_duration = end_time - start_time
@@ -209,9 +214,3 @@ finally:
 
     camera.release()
     cv2.destroyAllWindows()
-
-# end_time = time.time()
-# duration = end_time - start_time
-# print(start_time)
-# print(end_time)
-# print(duration)
